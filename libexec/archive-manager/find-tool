@@ -1,5 +1,7 @@
 #!/bin/bash
 
+## Keep lines sorted
+
 declare -A mime_suite=(
     ["application/x-rar"]="rar"
     ["application/x-tar"]="tar"
@@ -8,19 +10,23 @@ declare -A mime_suite=(
 
 declare -A mime_comp=(
     ["application/gzip"]="gzip"
+    ["application/x-bzip2"]="bzip2"
     ["application/x-xz"]="xz"
 )
 
 declare -A ext_suite=(
+    ["rar"]="rar"
     ["tar"]="tar"
     ["zip"]="zip"
-    ["rar"]="rar"
 )
 
 declare -A ext_comp=(
+    ["bz2"]="bzip2"
     ["gz"]="gzip"
     ["xz"]="xz"
 )
+
+##
 
 archive="$1"
 
