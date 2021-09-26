@@ -8,30 +8,82 @@ declare -A mime_suite=(
 
 declare -A mime_comp=(
     ["application/gzip"]="gzip"
+    ["application/x-xz"]="xz"
+)
+
+declare -A ext_suite=(
+    ["tar"]="tar"
+    ["zip"]="zip"
+    ["rar"]="rar"
+)
+
+declare -A ext_comp=(
+    ["gz"]="gzip"
+    ["xz"]="xz"
 )
 
 archive="$1"
-mime_type=$(file -b --mime-type $archive)
 
-suite=${mime_suite[$mime_type]}
-comp=${mime_comp[$mime_type]}
+type_from_existing() {
+    mime_type=$(file -b --mime-type $archive)
 
-if [ -z "$comp" -a -z "$suite" ]; then
-    file_type=$(file $archive)
+    suite=${mime_suite[$mime_type]}
+    comp=${mime_comp[$mime_type]}
 
-    $amlib/error "Unknown archive type: $mime_type ($file_type)"
-    exit 1
-fi
+    if [ -z "$comp" -a -z "$suite" ]; then
+        file_type=$(file $archive)
 
-if [ -z "$suite" ]; then
-    comp_tool=$amlib/comp-$comp
+        $amlib/error "Unknown archive type: $mime_type ($file_type)"
+        exit 1
+    fi
 
-    nested_mime=$($comp_tool cat $archive | file -b --mime-type -)
-    suite=${mime_suite[$nested_mime]}
-fi
+    if [ -z "$suite" ]; then
+        comp_tool=$amlib/comp-$comp
 
-if [ "$comp" ]; then
-    echo "$amlib/suite-$suite --comp $comp_tool"
+        nested_mime=$($comp_tool cat $archive | file -b --mime-type -)
+        suite=${mime_suite[$nested_mime]}
+    fi
+
+    if [ "$comp" ]; then
+        echo "$amlib/suite-$suite --comp $comp_tool"
+    else
+        echo "$amlib/suite-$suite"
+    fi
+}
+
+type_from_extension() {
+    # this is terrible and ought to be fixed
+
+    IFS="."
+    read -ra tool <<< "$archive"
+    last=$(( ${#tool[@]} - 1 ))
+    let next=last-1
+
+    suite=${ext_suite[${tool[$last]}]}
+    comp=${ext_comp[${tool[$last]}]}
+
+    if [ -z "$suite" -a -z "$comp" ]; then
+        $amlib/error "Unable to determine suite or compression from filename: $archive"
+        exit 1;
+    fi
+
+    if [ -z "$suite" ]; then
+        suite=${ext_suite[${tool[$next]}]}
+        if [ -z "$suite" ]; then
+            $amlib/error "Unknown suite for filename: $archive"
+        fi
+    fi
+
+    if [ "$comp" ]; then
+        comp_tool=$amlib/comp-$comp
+        echo "$amlib/suite-$suite --comp $comp_tool"
+    else
+        echo "$amlib/suite-$suite"
+    fi
+}
+
+if [ -e "$archive" ]; then
+    type_from_existing
 else
-    echo "$amlib/suite-$suite"
+    type_from_extension
 fi

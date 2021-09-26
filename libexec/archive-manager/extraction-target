@@ -17,7 +17,7 @@ if [ -z "$archive" ]; then
     exit 1
 fi
 
-if am list $archive | am-is-list-single-root; then
+if $am list $archive | $amlib/is-list-single-root; then
     echo .
     exit 0
 fi
@@ -26,6 +26,7 @@ target=$($am basename $archive)
 
 if [ "$create" ]; then
     if [ -e "$target" ]; then
+        oldtarget=$target
         target=$(mktemp -d $target-XXXXXXXXXX)
     else
         mkdir $target

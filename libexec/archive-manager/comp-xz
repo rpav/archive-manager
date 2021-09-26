@@ -1,0 +1,12 @@
+#!/bin/bash
+
+cmd=$1
+archive=$2
+
+case "$cmd" in
+    decompress) unxz $archive ;;
+    compress) xz -9 $archive ;;
+    cat) xzcat $archive ;;
+    basename) basename "$archive" .xz ;;
+    *) $amlib/error "$0: Unknown command: $cmd" ; exit 1 ;;
+esac
