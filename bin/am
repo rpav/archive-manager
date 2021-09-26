@@ -18,6 +18,9 @@ usage() {
     echo
 }
 
+export am=$(realpath $0)
+export amlib=$(realpath -e "$(dirname $am)/../libexec/archive-manager/" )
+
 while [ "$1" ]; do
     option="$1"
 
@@ -34,11 +37,11 @@ archive="$2"
 shift 2
 
 if [ ! -r "$archive" ]; then
-    echo "Unable to read archive: $archive"
+    $amlib/error "Unable to read archive: $archive"
     exit 1
 fi
 
-archive_tool=$(am-find-tool $archive)
+archive_tool=$($amlib/find-tool $archive)
 
 if [ -z "$archive_tool" ]; then
     exit 1
@@ -50,6 +53,6 @@ toolbin="$(command -v -- ${basetool[0]})"
 if [ ! -z "$toolbin" -a -x "$toolbin" ]; then
     exec $archive_tool $cmd $archive "$@"
 else
-    echo "Archive recognized, but unable to find \`$basetool\` to process it"
+    $amlib/error "Archive recognized, but unable to find \`$basetool\` to process it"
     exit 1
 fi

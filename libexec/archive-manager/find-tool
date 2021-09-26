@@ -19,19 +19,19 @@ comp=${mime_comp[$mime_type]}
 if [ -z "$comp" -a -z "$suite" ]; then
     file_type=$(file $archive)
 
-    echo "Unknown archive type: $mime_type ($file_type)" >&2
+    $amlib/error "Unknown archive type: $mime_type ($file_type)"
     exit 1
 fi
 
 if [ -z "$suite" ]; then
-    comp_tool=am-comp-$comp
+    comp_tool=$amlib/comp-$comp
 
     nested_mime=$($comp_tool cat $archive | file -b --mime-type -)
     suite=${mime_suite[$nested_mime]}
 fi
 
 if [ "$comp" ]; then
-    echo "am-suite-$suite --comp am-comp-$comp"
+    echo "$amlib/suite-$suite --comp $comp_tool"
 else
-    echo "am-suite-$suite"
+    echo "$amlib/suite-$suite"
 fi

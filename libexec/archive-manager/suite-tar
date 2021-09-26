@@ -4,7 +4,7 @@ comp_default=am-cat
 
 usage() {
     echo
-    echo "am-suite-tar [OPTIONS...] <cmd> <archive>"
+    echo "am/suite-tar [OPTIONS...] <cmd> <archive>"
     echo
     echo "    l, list                list files in archive"
     echo
@@ -39,7 +39,7 @@ case "$cmd" in
             done
         ;;
     x)
-        target=$(am-extraction-target -c $archive)
+        target=$($amlib/extraction-target -c $archive)
         cd $target
         ($comp cat $archive) | tar xvf -
         ;;

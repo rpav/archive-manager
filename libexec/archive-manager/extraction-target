@@ -13,7 +13,7 @@ archive=$1
 shift
 
 if [ -z "$archive" ]; then
-    echo "$0: no archive specified" >&2
+    $amlib/error "$0: no archive specified"
     exit 1
 fi
 
@@ -22,7 +22,7 @@ if am list $archive | am-is-list-single-root; then
     exit 0
 fi
 
-target=$(am basename $archive)
+target=$($am basename $archive)
 
 if [ "$create" ]; then
     if [ -e "$target" ]; then
