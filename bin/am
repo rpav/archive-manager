@@ -1,0 +1,55 @@
+#!/bin/bash
+
+usage() {
+    echo
+    echo "am [OPTIONS...] <cmd> <archive> [CMD-OPTIONS...]"
+    echo
+    echo "Commands:"
+    echo
+    echo "   x               Extract"
+    echo "   c               Create"
+    echo "   l               List"
+    echo
+    echo "See --help for any given command"
+    echo
+    echo "Options:"
+    echo
+    echo "   -h, --help      This help"
+    echo
+}
+
+while [ "$1" ]; do
+    option="$1"
+
+    case "$option" in
+        -h|--help) usage; exit 0 ;;
+        *) break
+    esac
+
+    shift
+done
+
+cmd="$1"
+archive="$2"
+shift 2
+
+if [ ! -r "$archive" ]; then
+    echo "Unable to read archive: $archive"
+    exit 1
+fi
+
+archive_tool=$(am-find-tool $archive)
+
+if [ -z "$archive_tool" ]; then
+    exit 1
+fi
+
+read -ra basetool <<< "$archive_tool"
+toolbin="$(command -v -- ${basetool[0]})"
+
+if [ ! -z "$toolbin" -a -x "$toolbin" ]; then
+    exec $archive_tool $cmd $archive "$@"
+else
+    echo "Archive recognized, but unable to find \`$basetool\` to process it"
+    exit 1
+fi

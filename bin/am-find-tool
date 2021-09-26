@@ -1,0 +1,37 @@
+#!/bin/bash
+
+declare -A mime_suite=(
+    ["application/x-rar"]="rar"
+    ["application/x-tar"]="tar"
+    ["application/zip"]="zip"
+)
+
+declare -A mime_comp=(
+    ["application/gzip"]="gzip"
+)
+
+archive="$1"
+mime_type=$(file -b --mime-type $archive)
+
+suite=${mime_suite[$mime_type]}
+comp=${mime_comp[$mime_type]}
+
+if [ -z "$comp" -a -z "$suite" ]; then
+    file_type=$(file $archive)
+
+    echo "Unknown archive type: $mime_type ($file_type)" >&2
+    exit 1
+fi
+
+if [ -z "$suite" ]; then
+    comp_tool=am-comp-$comp
+
+    nested_mime=$($comp_tool cat $archive | file -b --mime-type -)
+    suite=${mime_suite[$nested_mime]}
+fi
+
+if [ "$comp" ]; then
+    echo "am-suite-$suite --comp am-comp-$comp"
+else
+    echo "am-suite-$suite"
+fi
