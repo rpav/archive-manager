@@ -4,7 +4,6 @@ usage() {
     echo
     echo "am/suite-tar [OPTIONS...] <cmd> <archive>"
     echo "    basename               Basename of a foo.zip file (e.g., foo)"
-    echo "    c, create              Create an archive"
     echo "    l, list                List files in archive"
     echo "    x, extract             Extract archive"
     echo
@@ -28,34 +27,30 @@ shift 2
 
 case "$cmd" in
     basename)
-        echo $(basename "$archive" .zip)
+        echo $(basename "$archive" .rar)
         ;;
     c|create)
-        if [ -e "$archive" ]; then
-            $amlib/error "Not creating archive over existing file: $archive"
-            exit 1;
-        fi
-
-        zip $archive -- "$@"
+        echo "Creating RAR is unsupported at this time"
+        exit 1
         ;;
     l|list)
-        lc=0
-        unzip -l $archive |
+        unrar v $archive |
             while read -ra line; do
-                if [ $lc -gt 2 ]; then
+                if [ "$past_head" ]; then
                     if [ "${line[0]:0:1}" == "-" ]; then
                         break;
                     fi
 
-                    echo "${line[3]}"
+                    echo "${line[7]}"
+                elif [ "${line[0]:0:1}" == "-" ]; then
+                    past_head=1
                 fi
-                let lc++
             done
         ;;
     x|extract)
         target=$($amlib/extraction-target -c $archive)
         cd $target
-        unzip $archive
+        unrar x -y $archive
 
         echo
         echo Extracted to $target/

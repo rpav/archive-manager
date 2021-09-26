@@ -25,7 +25,7 @@ while [ "$1" ]; do
 done
 
 cmd="$1"
-archive=$(realpath -e $2)
+archive=$(realpath $2)
 shift 2
 
 case "$cmd" in
