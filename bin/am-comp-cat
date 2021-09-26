@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# This is a most-NOP wrapper around `cat`, but behaves like other am-comp-
+# tools and provides a uniform interface, so we can avoid a lot of
+# special-casing.
+
+cmd=$1
+archive=$2
+
+case "$cmd" in
+    decompress) ;;
+    compress) ;;
+    cat) cat $archive ;;
+    basename) echo "$archive" ;;
+    *) echo "$0: Unknown command: $cmd" >&2 ; exit 1 ;;
+esac

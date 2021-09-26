@@ -7,5 +7,6 @@ case "$cmd" in
     decompress) gunzip $archive ;;
     compress) gzip -9 $archive ;;
     cat) zcat $archive ;;
+    basename) basename "$archive" .gz ;;
     *) echo "$0: Unknown command: $cmd" >&2 ; exit 1 ;;
 esac

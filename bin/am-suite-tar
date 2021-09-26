@@ -1,5 +1,7 @@
 #!/bin/bash
 
+comp_default=am-cat
+
 usage() {
     echo
     echo "am-suite-tar [OPTIONS...] <cmd> <archive>"
@@ -26,17 +28,19 @@ cmd="$1"
 archive="$2"
 shift 2
 
-if [ "$comp" ]; then
-    comp_args="cat"
-else
-    comp=cat
-fi
-
 case "$cmd" in
-    l|list) ($comp $comp_args $archive) | tar tvf - |
-              while read -ra line; do
-                  echo "${line[5]}"
-              done
-          ;;
-    x) ($comp $comp_args $archive) | tar xvf - ;;
+    basename)
+        echo $(basename $($comp basename $archive) .tar)
+        ;;
+    l|list)
+        ($comp cat $archive) | tar tvf - |
+            while read -ra line; do
+                echo "${line[5]}"
+            done
+        ;;
+    x)
+        target=$(am-extraction-target -c $archive)
+        cd $target
+        ($comp cat $archive) | tar xvf -
+        ;;
 esac

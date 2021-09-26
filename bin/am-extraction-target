@@ -1,0 +1,35 @@
+#!/bin/bash
+
+while [ "$1" ]; do
+    opt="$1"
+    case "$opt" in
+        -c|--create) create=1;;
+        *) break;
+    esac
+    shift
+done
+
+archive=$1
+shift
+
+if [ -z "$archive" ]; then
+    echo "$0: no archive specified" >&2
+    exit 1
+fi
+
+if am list $archive | am-is-list-single-root; then
+    echo .
+    exit 0
+fi
+
+target=$(am basename $archive)
+
+if [ "$create" ]; then
+    if [ -e "$target" ]; then
+        target=$(mktemp -d $target-XXXXXXXXXX)
+    else
+        mkdir $target
+    fi
+fi
+
+echo $target

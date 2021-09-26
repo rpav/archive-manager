@@ -21,7 +21,6 @@ while read -ra line ; do
     # Otherwise anytime this root is different than the last, we've found
     # multi-root
     if [ $lc -gt 0 -a "${line[0]}" != "$last" ]; then
-        echo "$lc $last ${line[0]}"
         exit 1
     fi
     last="${line[0]}"
