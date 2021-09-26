@@ -5,15 +5,11 @@ usage() {
     echo "am [OPTIONS...] <cmd> <archive> [CMD-OPTIONS...]"
     echo
     echo "Commands:"
-    echo
-    echo "   x               Extract"
-    echo "   c               Create"
-    echo "   l               List"
-    echo
-    echo "See --help for any given command"
+    echo "   x, extract               Extract"
+    echo "   c, create                Create"
+    echo "   l, list                  List"
     echo
     echo "Options:"
-    echo
     echo "   -h, --help      This help"
     echo
 }

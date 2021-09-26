@@ -1,15 +1,14 @@
 #!/bin/bash
 
-comp_default=am-cat
-
 usage() {
     echo
     echo "am/suite-tar [OPTIONS...] <cmd> <archive>"
-    echo
-    echo "    l, list                list files in archive"
+    echo "    basename               Basename of a foo.zip file (e.g., foo)"
+    echo "    c, create              Create an archive"
+    echo "    l, list                List files in archive"
+    echo "    x, extract             Extract archive"
     echo
     echo "Options:"
-    echo "    --comp TOOL            Compression tool for pre/post process"
     echo "    -h, --help             This help"
     echo
 }
@@ -17,7 +16,6 @@ usage() {
 while [ "$1" ]; do
     opt="$1"
     case "$opt" in
-        --comp) shift; comp="$1" ;;
         -h|--help) usage ; exit ;;
         *) break ;;
     esac
@@ -30,7 +28,7 @@ shift 2
 
 case "$cmd" in
     basename)
-        echo $(basename $($comp basename $archive) .tar)
+        echo $(basename "$archive" .zip)
         ;;
     c|create)
         if [ -e "$archive" ]; then
@@ -38,18 +36,26 @@ case "$cmd" in
             exit 1;
         fi
 
-        tar cvf - -- "$@" | $comp compress - > $archive
+        zip $archive -- "$@"
         ;;
     l|list)
-        ($comp cat $archive) | tar tvf - |
+        lc=0
+        unzip -l $archive |
             while read -ra line; do
-                echo "${line[5]}"
+                if [ $lc -gt 2 ]; then
+                    if [ "${line[0]:0:1}" == "-" ]; then
+                        break;
+                    fi
+
+                    echo "${line[3]}"
+                fi
+                let lc++
             done
         ;;
     x|extract)
         target=$($amlib/extraction-target -c $archive)
         cd $target
-        ($comp cat $archive) | tar xvf -
+        unzip $archive
 
         echo
         echo Extracted to $target/
