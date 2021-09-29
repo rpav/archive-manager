@@ -2,7 +2,7 @@
 
 usage() {
     echo
-    echo "am [OPTIONS...] <cmd> <archive> [CMD-OPTIONS...]"
+    echo "am [OPTIONS...] <archive> [ARCHIVE-OPTIONS...] [CMD [CMD-OPTIONS...]]"
     echo
     echo "Commands:"
     echo "   x, extract               Extract"
@@ -28,9 +28,14 @@ while [ "$1" ]; do
     shift
 done
 
-cmd="$1"
-archive="$2"
+archive="$1"
+cmd="$2"
 shift 2
+
+if [ -z "$archive" ]; then
+    usage
+    exit
+fi
 
 archive_tool=$($amlib/find-tool $archive)
 
@@ -42,7 +47,7 @@ read -ra basetool <<< "$archive_tool"
 toolbin="$(command -v -- ${basetool[0]})"
 
 if [ ! -z "$toolbin" -a -x "$toolbin" ]; then
-    exec $archive_tool $cmd $archive "$@"
+    exec $archive_tool "$archive" "$cmd" "$@"
 else
     $amlib/error "Archive recognized, but unable to find \`$basetool\` to process it"
     exit 1

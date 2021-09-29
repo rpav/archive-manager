@@ -6,9 +6,9 @@ This is a little utility similar to [atool](https://www.nongnu.org/atool/) or [p
   * Implemented in a unix-like fashion with a number of separate, reusable utilities
 
 ```console
-$ am c foo.tar.xz path/   # Create foo.tar.xz from path/
-$ am x foo.tar.xz         # Extract archive
-$ am l foo.tar.xz         # List archive
+$ am foo.tar.xz c path/    # Create foo.tar.xz from path/
+$ am foo.tar.xz x          # Extract archive
+$ am foo.tar.xz l          # List archive
 ```
 
 ### Supported formats
@@ -32,7 +32,7 @@ Commands may be specified using the long or short form.
 This will extract an archive, much like calling the appropriate utility, with one exception: archives with multiple files in the root will be extracted to a separate directory.
 
 ```console
-$ am x file.zip
+$ am file.zip x
 $
 ```
 
@@ -43,7 +43,7 @@ $
 This will create an archive from specified files.
 
 ```console
-$ am c file.zip a.txt b.txt c.txt
+$ am file.zip c a.txt b.txt c.txt
    : (output)
 $
 ```
@@ -55,7 +55,7 @@ $
 List an archive.  Unlike the specific commands, file names _only_ are extracted, so this may be more useful in scripts.
 
 ```console
-$ am l file.tar.bz2
+$ am file.tar.bz2 l
    :
 $
 ```
@@ -68,7 +68,7 @@ $
 For determining how to map files and extensions to compression types or suites (archive types), change the following:
 
   * `libexec/archive-manager/find-tool`
-
+\
 For adding a particular compression or suite, then create:
 
   * `libexec/archive-manager/comp-<TYPE>`

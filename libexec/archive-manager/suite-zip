@@ -2,7 +2,9 @@
 
 usage() {
     echo
-    echo "am/suite-tar [OPTIONS...] <cmd> <archive>"
+    echo "am/suite-zip [OPTIONS...] <archive> c FILES..."
+    echo "am/suite-zip [OPTIONS...] <archive> <l|x>"
+    echo
     echo "    basename               Basename of a foo.zip file (e.g., foo)"
     echo "    c, create              Create an archive"
     echo "    l, list                List files in archive"

@@ -4,9 +4,13 @@ comp_default=am-cat
 
 usage() {
     echo
-    echo "am/suite-tar [OPTIONS...] <cmd> <archive>"
+    echo "am/suite-tar [OPTIONS...] <archive> c FILES..."
+    echo "am/suite-tar [OPTIONS...] <archive> <l|x>"
     echo
-    echo "    l, list                list files in archive"
+    echo "    basename               Basename of a foo.zip file (e.g., foo)"
+    echo "    c, create              Create archive from files"
+    echo "    l, list                List files in archive"
+    echo "    x, extract             Extract files in archive"
     echo
     echo "Options:"
     echo "    --comp TOOL            Compression tool for pre/post process"
@@ -24,9 +28,13 @@ while [ "$1" ]; do
     shift
 done
 
-cmd="$1"
-archive=$(realpath $2)
+archive=$(realpath $1)
+cmd="$2"
 shift 2
+
+if [ -z "$cmd" ]; then
+    cmd='help'
+fi
 
 case "$cmd" in
     basename)
@@ -40,6 +48,9 @@ case "$cmd" in
 
         tar cvf - -- "$@" | $comp compress - > $archive
         ;;
+
+    h|help) usage; exit 0;;
+
     l|list)
         ($comp cat $archive) | tar tvf - |
             while read -ra line; do
@@ -54,4 +65,6 @@ case "$cmd" in
         echo
         echo Extracted to $target/
         ;;
+
+    *) $amlib/error "Unknown command: $cmd"; usage; exit 1 ;;
 esac
