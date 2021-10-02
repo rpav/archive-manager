@@ -4,8 +4,8 @@
 # tools and provides a uniform interface, so we can avoid a lot of
 # special-casing.
 
-cmd=$1
-archive=$2
+archive=$1
+cmd=$2
 
 case "$cmd" in
     decompress) ;;

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-cmd=$1
-archive=$2
+archive=$1
+cmd=$2
 
 case "$cmd" in
     decompress) unxz $archive ;;

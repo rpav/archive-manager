@@ -21,7 +21,7 @@ usage() {
 while [ "$1" ]; do
     opt="$1"
     case "$opt" in
-        --comp) shift; comp="$1" ;;
+        --comp) shift; comp_tool="$1" ;;
         -h|--help) usage ; exit ;;
         *) break ;;
     esac
@@ -38,7 +38,7 @@ fi
 
 case "$cmd" in
     basename)
-        echo $(basename $($comp basename $archive) .tar)
+        echo $(basename $($comp_tool $archive basename) .tar)
         ;;
     c|create)
         if [ -e "$archive" ]; then
@@ -46,13 +46,13 @@ case "$cmd" in
             exit 1;
         fi
 
-        tar cvf - -- "$@" | $comp compress - > $archive
+        tar cvf - -- "$@" | $comp_tool - compress > $archive
         ;;
 
     h|help) usage; exit 0;;
 
     l|list)
-        ($comp cat $archive) | tar tvf - |
+        ($comp_tool $archive cat) | tar tvf - |
             while read -ra line; do
                 echo "${line[5]}"
             done
@@ -60,7 +60,7 @@ case "$cmd" in
     x|extract)
         target=$($amlib/extraction-target -c $archive)
         cd $target
-        ($comp cat $archive) | tar xvf -
+        ($comp_tool $archive cat) | tar xvf -
 
         echo
         echo Extracted to $target/

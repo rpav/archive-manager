@@ -1,12 +1,18 @@
 #!/bin/bash
 
-cmd=$1
-archive=$2
+archive=$1
+cmd=$2
 
 case "$cmd" in
     decompress) gunzip $archive ;;
     compress) gzip -9 $archive ;;
     cat) zcat $archive ;;
-    basename) basename "$archive" .gz ;;
+    basename)
+        if [[ "$archive" =~ \.tgz$ ]]; then
+            echo $(basename "$archive" .tgz).tar
+        else
+            basename "$archive" .gz
+        fi
+        ;;
     *) $amlib/error "$0: Unknown command: $cmd" ; exit 1 ;;
 esac

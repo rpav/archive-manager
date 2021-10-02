@@ -10,6 +10,7 @@ declare -A mime_suite=(
 
 declare -A mime_comp=(
     ["application/gzip"]="gzip"
+    ["application/x-gzip"]="gzip"
     ["application/x-bzip2"]="bzip2"
     ["application/x-xz"]="xz"
 )
@@ -46,7 +47,7 @@ type_from_existing() {
     if [ -z "$suite" ]; then
         comp_tool=$amlib/comp-$comp
 
-        nested_mime=$($comp_tool cat $archive | file -b --mime-type -)
+        nested_mime=$($comp_tool $archive cat | file -b --mime-type -)
         suite=${mime_suite[$nested_mime]}
     fi
 
