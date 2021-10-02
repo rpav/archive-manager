@@ -7,6 +7,7 @@ declare -A mime_suite=(
     ["application/x-rar"]="rar"
     ["application/x-tar"]="tar"
     ["application/zip"]="zip"
+    ["application/x-7z-compressed"]="7z"
 )
 
 declare -A mime_comp=(
@@ -18,17 +19,18 @@ declare -A mime_comp=(
 )
 
 declare -A ext_suite=(
+    ["cpio"]="cpio"
     ["rar"]="rar"
     ["tar"]="tar"
     ["zip"]="zip"
-    ["cpio"]="cpio"
+    ["7z"]="7z"
 )
 
 declare -A ext_comp=(
+    ["Z"]="compress"
     ["bz2"]="bzip2"
     ["gz"]="gzip"
     ["xz"]="xz"
-    ["Z"]="compress"
     ["z"]="compress"
 )
 

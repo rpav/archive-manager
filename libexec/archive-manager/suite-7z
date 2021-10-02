@@ -1,0 +1,74 @@
+#!/bin/bash
+
+usage() {
+    echo
+    echo "am/suite-7z [OPTIONS...] <archive> c FILES..."
+    echo "am/suite-7z [OPTIONS...] <archive> <l|x>"
+    echo
+    echo "    basename               Basename of a foo.zip file (e.g., foo)"
+    echo "    c, create              Create an archive"
+    echo "    l, list                List files in archive"
+    echo "    x, extract             Extract archive"
+    echo
+    echo "Options:"
+    echo "    -h, --help             This help"
+    echo
+}
+
+while [ "$1" ]; do
+    opt="$1"
+    case "$opt" in
+        -h|--help) usage ; exit ;;
+        *) break ;;
+    esac
+    shift
+done
+
+archive=$(realpath $1)
+shift
+
+if [ ! "$1" ]; then
+    usage
+    exit 0
+fi
+
+cmd="$1"
+shift
+
+case "$cmd" in
+    basename)
+        echo $(basename "$archive" .7z)
+        ;;
+    c|create)
+        if [ -e "$archive" ]; then
+            $amlib/error "Not creating archive over existing file: $archive"
+            exit 1;
+        fi
+
+        7z a $archive -- "$@"
+        ;;
+    l|list)
+        7z l $archive |
+            while read line; do
+                if [ "${line:0:4}" == "----" ]; then
+                    if [ "$begin" ]; then
+                        end=1
+                    else
+                        begin=1
+                    fi
+                else
+                    if [ "$begin" -a ! "$end" ]; then
+                        echo "${line:53}"
+                    fi
+                fi
+            done
+        ;;
+    x|extract)
+        target=$($amlib/extraction-target -c $archive)
+        cd $target
+        7z x -y $archive
+
+        echo
+        echo Extracted to $target/
+        ;;
+esac

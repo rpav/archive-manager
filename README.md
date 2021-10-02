@@ -19,6 +19,7 @@ $ am foo.tar.xz l          # List archive
     - xz
     - z (compress)
   * Archives:
+    - 7-Zip
     - cpio
     - rar (extract only)
     - tar
