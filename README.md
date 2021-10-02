@@ -13,8 +13,16 @@ $ am foo.tar.xz l          # List archive
 
 ### Supported formats
 
-  * Compression: gz, bzip2, xz
-  * Archives: zip, tar, rar (extract only)
+  * Compression:
+    - bzip2
+    - gz
+    - xz
+    - z (compress)
+  * Archives:
+    - cpio
+    - rar (extract only)
+    - tar
+    - zip
 
 Adding more is pretty straightforward (see below).
 

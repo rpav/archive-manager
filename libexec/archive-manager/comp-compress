@@ -1,0 +1,20 @@
+#!/bin/bash
+
+archive=$1
+cmd=$2
+
+case "$cmd" in
+    decompress) uncompress $archive ;;
+    compress) compress $archive ;;
+    cat) zcat $archive ;;
+    basename)
+        if [[ "$archive" =~ \.tz$ ]]; then
+            echo $(basename "$archive" .tz).tar
+        elif [[ "$archive" =~ \.z$ ]]; then
+            basename "$archive" .z
+        else
+            basename "$archive" .Z
+        fi
+        ;;
+    *) $amlib/error "$0: Unknown command: $cmd" ; exit 1 ;;
+esac

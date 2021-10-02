@@ -4,8 +4,8 @@ comp_default=$amlib/comp-cat
 
 usage() {
     echo
-    echo "am/suite-tar [OPTIONS...] <archive> c FILES..."
-    echo "am/suite-tar [OPTIONS...] <archive> <l|x>"
+    echo "am/suite-cpio [OPTIONS...] <archive> c FILES..."
+    echo "am/suite-cpio [OPTIONS...] <archive> <l|x>"
     echo
     echo "    basename               Basename of a foo.zip file (e.g., foo)"
     echo "    c, create              Create archive from files"
@@ -42,7 +42,7 @@ fi
 
 case "$cmd" in
     basename)
-        echo $(basename $($comp_tool $archive basename) .tar)
+        echo $(basename $($comp_tool $archive basename) .cpio)
         ;;
     c|create)
         if [ -e "$archive" ]; then
@@ -50,21 +50,24 @@ case "$cmd" in
             exit 1;
         fi
 
-        tar cvf - -- "$@" | $comp_tool - compress > $archive
+        (for i in "$@"; do
+             if [ -d "$i" ]; then
+                 find $i
+             else
+                 echo $i
+             fi
+         done) | cpio -o | $comp_tool - compress > $archive
         ;;
 
     h|help) usage; exit 0;;
 
     l|list)
-        ($comp_tool $archive cat) | tar tvf - |
-            while read -ra line; do
-                echo "${line[5]}"
-            done
+        ($comp_tool $archive cat) | cpio -t --quiet
         ;;
     x|extract)
         target=$($amlib/extraction-target -c $archive)
         cd $target
-        ($comp_tool $archive cat) | tar xvf -
+        ($comp_tool $archive cat) | cpio -i -d -v --quiet
 
         echo
         echo Extracted to $target/

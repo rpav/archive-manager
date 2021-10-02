@@ -3,6 +3,7 @@
 ## Keep lines sorted
 
 declare -A mime_suite=(
+    ["application/x-cpio"]="cpio"
     ["application/x-rar"]="rar"
     ["application/x-tar"]="tar"
     ["application/zip"]="zip"
@@ -10,8 +11,9 @@ declare -A mime_suite=(
 
 declare -A mime_comp=(
     ["application/gzip"]="gzip"
-    ["application/x-gzip"]="gzip"
     ["application/x-bzip2"]="bzip2"
+    ["application/x-compress"]="compress"
+    ["application/x-gzip"]="gzip"
     ["application/x-xz"]="xz"
 )
 
@@ -19,12 +21,15 @@ declare -A ext_suite=(
     ["rar"]="rar"
     ["tar"]="tar"
     ["zip"]="zip"
+    ["cpio"]="cpio"
 )
 
 declare -A ext_comp=(
     ["bz2"]="bzip2"
     ["gz"]="gzip"
     ["xz"]="xz"
+    ["Z"]="compress"
+    ["z"]="compress"
 )
 
 ##
