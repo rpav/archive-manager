@@ -50,11 +50,12 @@ case "$cmd" in
             done
         ;;
     x|extract)
-        target=$($amlib/extraction-target -c $archive)
+        target=$($amlib/extraction-target $archive)
+        cwd=$PWD
         cd $target
         unrar x -y $archive
+        cd $cwd
 
-        echo
-        echo Extracted to $target/
+        $amlib/temp-dir-cleanup $target
         ;;
 esac

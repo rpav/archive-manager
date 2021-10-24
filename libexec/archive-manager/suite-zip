@@ -24,8 +24,8 @@ while [ "$1" ]; do
     shift
 done
 
-cmd="$1"
-archive=$(realpath $2)
+archive=$(realpath $1)
+cmd="$2"
 shift 2
 
 case "$cmd" in
@@ -55,11 +55,12 @@ case "$cmd" in
             done
         ;;
     x|extract)
-        target=$($amlib/extraction-target -c $archive)
+        target=$($amlib/extraction-target $archive)
+        cwd=$PWD
         cd $target
         unzip $archive
+        cd $cwd
 
-        echo
-        echo Extracted to $target/
+        $amlib/temp-dir-cleanup $target
         ;;
 esac

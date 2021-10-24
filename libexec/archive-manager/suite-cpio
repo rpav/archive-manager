@@ -65,12 +65,13 @@ case "$cmd" in
         ($comp_tool $archive cat) | cpio -t --quiet
         ;;
     x|extract)
-        target=$($amlib/extraction-target -c $archive)
+        target=$($amlib/extraction-target $archive)
+        cwd=$PWD
         cd $target
         ($comp_tool $archive cat) | cpio -i -d -v --quiet
+        cd $cwd
 
-        echo
-        echo Extracted to $target/
+        $amlib/temp-dir-cleanup $target
         ;;
 
     *) $amlib/error "Unknown command: $cmd"; usage; exit 1 ;;

@@ -1,13 +1,10 @@
 #!/bin/bash
 
-while [ "$1" ]; do
-    opt="$1"
-    case "$opt" in
-        -c|--create) create=1;;
-        *) break;
-    esac
-    shift
-done
+usage() {
+    echo "am extraction-target ARCHIVE"
+    echo
+    echo "Create a temporary directory in which to extract ARCHIVE."
+}
 
 archive=$1
 shift
@@ -17,20 +14,7 @@ if [ -z "$archive" ]; then
     exit 1
 fi
 
-if $am $archive list | $amlib/is-list-single-root; then
-    echo .
-    exit 0
-fi
-
-target=$($am $archive basename)
-
-if [ "$create" ]; then
-    if [ -e "$target" ]; then
-        oldtarget=$target
-        target=$(mktemp -d $target-XXXXXXXXXX)
-    else
-        mkdir $target
-    fi
-fi
+basename=$($am $archive basename)
+target=$(mktemp -d $basename-XXXXX)
 
 echo $target

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+usage() {
+    echo
+    echo "am/temp-dir-cleanup TARGET"
+    echo
+    echo "Clean up the temporary extraction directory TARGET; if the dir contains a"
+    echo "single file, move that file into the parent."
+    echo
+}
+
+target="$1"
+shift
+
+count=$(ls -1A $target | wc -l)
+
+if [ "$count" -eq "1" ]; then
+    file=$(ls -1A $target)
+    if [ ! -e "$file" ]; then
+        mv $target/$file .
+        rmdir $target
+        echo
+        echo "Files extracted to: ./"
+    else
+        echo
+        echo "Files extracted to: $target/ (conflicts)"
+    fi
+else
+    echo "Files extracted to: $target/ (multiple files)"
+fi
