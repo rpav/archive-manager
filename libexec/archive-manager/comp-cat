@@ -4,13 +4,13 @@
 # tools and provides a uniform interface, so we can avoid a lot of
 # special-casing.
 
-archive=$1
+archive="$1"
 cmd=$2
 
 case "$cmd" in
     decompress) ;;
     compress) ;;
-    cat) cat $archive ;;
+    cat) cat "$archive" ;;
     basename) echo "$archive" ;;
     *) $amlib/error "$0: Unknown command: $cmd" ; exit 1 ;;
 esac

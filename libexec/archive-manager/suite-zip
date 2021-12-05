@@ -24,7 +24,7 @@ while [ "$1" ]; do
     shift
 done
 
-archive=$(realpath $1)
+archive=$(realpath "$1")
 cmd="$2"
 shift 2
 
@@ -34,15 +34,15 @@ case "$cmd" in
         ;;
     c|create)
         if [ -e "$archive" ]; then
-            $amlib/error "Not creating archive over existing file: $archive"
+            $amlib/error "Not creating archive over existing file: "$archive""
             exit 1;
         fi
 
-        zip $archive -- "$@"
+        zip "$archive" -- "$@"
         ;;
     l|list)
         lc=0
-        unzip -l $archive |
+        unzip -l "$archive" |
             while read -ra line; do
                 if [ $lc -gt 2 ]; then
                     if [ "${line[0]:0:1}" == "-" ]; then
@@ -55,12 +55,12 @@ case "$cmd" in
             done
         ;;
     x|extract)
-        target=$($amlib/extraction-target $archive)
+        target=$($amlib/extraction-target "$archive")
         cwd=$PWD
-        cd $target
-        unzip $archive
+        cd "$target"
+        unzip "$archive"
         cd $cwd
 
-        $amlib/temp-dir-cleanup $target
+        $amlib/temp-dir-cleanup "$target"
         ;;
 esac

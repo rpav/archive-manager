@@ -23,7 +23,7 @@ while [ "$1" ]; do
     shift
 done
 
-archive=$(realpath $1)
+archive=$(realpath "$1")
 cmd="$2"
 shift 2
 
@@ -36,7 +36,7 @@ case "$cmd" in
         exit 1
         ;;
     l|list)
-        unrar v $archive |
+        unrar v "$archive" |
             while read -ra line; do
                 if [ "$past_head" ]; then
                     if [ "${line[0]:0:1}" == "-" ]; then
@@ -50,12 +50,12 @@ case "$cmd" in
             done
         ;;
     x|extract)
-        target=$($amlib/extraction-target $archive)
+        target=$($amlib/extraction-target "$archive")
         cwd=$PWD
-        cd $target
-        unrar x -y $archive
+        cd "$target"
+        unrar x -y "$archive"
         cd $cwd
 
-        $amlib/temp-dir-cleanup $target
+        $amlib/temp-dir-cleanup "$target"
         ;;
 esac

@@ -37,7 +37,7 @@ if [ -z "$archive" ]; then
     exit
 fi
 
-archive_tool=$($amlib/find-tool $archive)
+archive_tool=$($amlib/find-tool "$archive")
 
 if [ -z "$archive_tool" ]; then
     exit 1

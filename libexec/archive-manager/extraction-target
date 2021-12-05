@@ -6,7 +6,7 @@ usage() {
     echo "Create a temporary directory in which to extract ARCHIVE."
 }
 
-archive=$1
+archive="$1"
 shift
 
 if [ -z "$archive" ]; then
@@ -14,7 +14,7 @@ if [ -z "$archive" ]; then
     exit 1
 fi
 
-basename=$($am $archive basename)
-target=$(mktemp -d $basename-XXXXX)
+basename=$($am "$archive" basename)
+target=$(mktemp -d "$basename"-XXXXX)
 
-echo $target
+echo "$target"

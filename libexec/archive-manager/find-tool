@@ -39,13 +39,13 @@ declare -A ext_comp=(
 archive="$1"
 
 type_from_existing() {
-    mime_type=$(file -b --mime-type $archive)
+    mime_type=$(file -b --mime-type "$archive")
 
     suite=${mime_suite[$mime_type]}
     comp=${mime_comp[$mime_type]}
 
     if [ -z "$comp" -a -z "$suite" ]; then
-        file_type=$(file $archive)
+        file_type=$(file "$archive")
 
         $amlib/error "Unknown archive type: $mime_type ($file_type)"
         exit 1
@@ -54,7 +54,7 @@ type_from_existing() {
     if [ -z "$suite" ]; then
         comp_tool=$amlib/comp-$comp
 
-        nested_mime=$($comp_tool $archive cat | file -b --mime-type -)
+        nested_mime=$($comp_tool "$archive" cat | file -b --mime-type -)
         suite=${mime_suite[$nested_mime]}
     fi
 
@@ -77,14 +77,14 @@ type_from_extension() {
     comp=${ext_comp[${tool[$last]}]}
 
     if [ -z "$suite" -a -z "$comp" ]; then
-        $amlib/error "Unable to determine suite or compression from filename: $archive"
+        $amlib/error "Unable to determine suite or compression from filename: '$archive'"
         exit 1;
     fi
 
     if [ -z "$suite" ]; then
         suite=${ext_suite[${tool[$next]}]}
         if [ -z "$suite" ]; then
-            $amlib/error "Unknown suite for filename: $archive"
+            $amlib/error "Unknown suite for filename: '$archive'"
         fi
     fi
 

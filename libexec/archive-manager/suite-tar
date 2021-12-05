@@ -28,7 +28,7 @@ while [ "$1" ]; do
     shift
 done
 
-archive=$(realpath $1)
+archive=$(realpath "$1")
 cmd="$2"
 shift 2
 
@@ -42,33 +42,33 @@ fi
 
 case "$cmd" in
     basename)
-        echo $(basename $($comp_tool $archive basename) .tar)
+        echo $(basename $($comp_tool "$archive" basename) .tar)
         ;;
     c|create)
         if [ -e "$archive" ]; then
-            $amlib/error "Not creating archive over existing file: $archive"
+            $amlib/error "Not creating archive over existing file: "$archive""
             exit 1;
         fi
 
-        tar cvf - -- "$@" | $comp_tool - compress > $archive
+        tar cvf - -- "$@" | $comp_tool - compress > "$archive"
         ;;
 
     h|help) usage; exit 0;;
 
     l|list)
-        ($comp_tool $archive cat) | tar tvf - |
+        ($comp_tool "$archive" cat) | tar tvf - |
             while read -ra line; do
                 echo "${line[5]}"
             done
         ;;
     x|extract)
-        target=$($amlib/extraction-target $archive)
+        target=$($amlib/extraction-target "$archive")
         cwd=$PWD
-        cd $target
-        ($comp_tool $archive cat) | tar xvf -
+        cd "$target"
+        ($comp_tool "$archive" cat) | tar xvf -
         cd $cwd
 
-        $amlib/temp-dir-cleanup $target
+        $amlib/temp-dir-cleanup "$target"
         ;;
 
     *) $amlib/error "Unknown command: $cmd"; usage; exit 1 ;;

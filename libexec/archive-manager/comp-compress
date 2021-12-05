@@ -1,12 +1,12 @@
 #!/bin/bash
 
-archive=$1
+archive="$1"
 cmd=$2
 
 case "$cmd" in
-    decompress) uncompress $archive ;;
-    compress) compress $archive ;;
-    cat) zcat $archive ;;
+    decompress) uncompress "$archive" ;;
+    compress) compress "$archive" ;;
+    cat) zcat "$archive" ;;
     basename)
         if [[ "$archive" =~ \.tz$ ]]; then
             echo $(basename "$archive" .tz).tar
