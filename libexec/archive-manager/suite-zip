@@ -16,7 +16,6 @@ usage() {
 }
 
 while [ "$1" ]; do
-    opt="$1"
     case "$opt" in
         -h|--help) usage ; exit ;;
         *) break ;;
@@ -24,9 +23,13 @@ while [ "$1" ]; do
     shift
 done
 
-archive=$(realpath "$1")
-cmd="$2"
-shift 2
+archive=$(realpath "$1"); shift
+cmd="$1"; shift
+
+if [ -z "$cmd" ]; then
+    usage
+    exit
+fi
 
 case "$cmd" in
     basename)
@@ -38,20 +41,19 @@ case "$cmd" in
             exit 1;
         fi
 
-        zip "$archive" -- "$@"
+        zip -r "$archive" -- "$@"
         ;;
     l|list)
-        lc=0
+        first=
         unzip -l "$archive" |
             while read -ra line; do
-                if [ $lc -gt 2 ]; then
-                    if [ "${line[0]:0:1}" == "-" ]; then
-                        break;
-                    fi
-
+                linechar="${line[0]:0:1}"
+                if [ "$first" ]; then
+                    [ "$linechar" == "-" ] && break
                     echo "${line[3]}"
+                elif [ "$linechar" == "-" ]; then
+                    first=1
                 fi
-                let lc++
             done
         ;;
     x|extract)
